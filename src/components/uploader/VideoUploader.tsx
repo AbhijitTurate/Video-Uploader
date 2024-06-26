@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import "./components/uploader/VideoUploader.css"
+import "./VideoUploader.css"
+
 const VideoUploader = () => {
     const [files, setFiles] = useState<any>([]); // Add type annotation to the state
     const [response, setResponse] = useState("");

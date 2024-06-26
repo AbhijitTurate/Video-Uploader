@@ -1,6 +1,6 @@
 import './App.css'
-import VideoUploader from './VideoUploader'
 import Header from './components/header/Header'
+import VideoUploader from './components/uploader/VideoUploader'
 
 function App() {
   return (
