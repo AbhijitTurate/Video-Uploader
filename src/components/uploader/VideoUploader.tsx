@@ -79,26 +79,30 @@ const VideoUploader = () => {
     }
     return (
         <div className='video-uploader-wrapper'>
-            <h1 className="text-4xl font-bold mb-4">Upload Files</h1>
+            <div className="video-uploader-inputs flex flex-col	items-center gap-y-8">
 
-            {/* <input type="file" multiple onChange={(e) => setFiles(e.target.files)} accept=".mov,.mp4" /> */}
-            <input
-                type="file"
-                className="file-input file-input-bordered file-input-primary w-full max-w-xs glass"
-                multiple
-                onChange={(e) => setFiles(e.target.files)}
-                accept=".mov,.mp4"
-            />
+                <h1 className="text-4xl font-bold mb-4">Upload Files</h1>
 
-            {/* <button onClick={handleUpload}>Upload</button> */}
-            <button className="btn btn-outline btn-primary" onClick={handleUpload}>Upload</button>
+                <input
+                    type="file"
+                    className="file-input file-input-bordered file-input-primary w-full max-w-xs glass"
+                    multiple
+                    onChange={(e) => setFiles(e.target.files)}
+                    accept=".mov,.mp4"
+                />
 
-            <div className="progress-wrapper response-area">
-                {loading > 0 && loading !== 101 && (
-                    <progress className="progress" value={loading} max="100"></progress>
-                )}
-                {response.length > 0  && response}
+                <button className="btn btn-outline btn-primary" onClick={handleUpload}>Upload</button>
             </div>
+
+            <div className="video-uploader-output">
+                <div className="progress-wrapper response-area">
+                    {loading > 0 && loading !== 101 && (
+                        <progress className="progress" value={loading} max="100"></progress>
+                    )}
+                    {response.length > 0 && response}
+                </div>
+            </div>
+
 
             {/* {response.length > 0 && (
                 <>
