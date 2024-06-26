@@ -17,7 +17,7 @@
   position: relative;
   /* overflow: hidden; */
   /* overflow-x: auto; */
-  width: 24rem;
+  width: 50rem;
   border-radius: var(--rounded-box, 1rem);
   --tw-bg-opacity: 1;
   background-color: var(--fallback-n, oklch(var(--n) / var(--tw-bg-opacity)));
