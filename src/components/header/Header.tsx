@@ -5,7 +5,7 @@ const Header = () => {
         <div className="navbar bg-base-100">
             <div className="navbar-start">
                 <div className="dropdown">
-                    <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+                    {/* <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-5 w-5"
@@ -25,14 +25,14 @@ const Header = () => {
                         <li><a>Homepage</a></li>
                         <li><a>Portfolio</a></li>
                         <li><a>About</a></li>
-                    </ul>
+                    </ul> */}
                 </div>
             </div>
             <div className="navbar-center">
-                <a className="btn btn-ghost text-xl">daisyUI</a>
+                <a className="italic text-2xl">Video Summarizer</a>
             </div>
             <div className="navbar-end">
-                <button className="btn btn-ghost btn-circle">
+                {/* <button className="btn btn-ghost btn-circle">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-5 w-5"
@@ -62,7 +62,7 @@ const Header = () => {
                         </svg>
                         <span className="badge badge-xs badge-primary indicator-item"></span>
                     </div>
-                </button>
+                </button> */}
             </div>
         </div>)
 }
