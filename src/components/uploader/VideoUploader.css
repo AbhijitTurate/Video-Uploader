@@ -8,11 +8,6 @@
   margin: 5rem 0;
 }
 
-.progress-wrapper {
-  width: 40vh;
-  min-height: 1.5rem;
-}
-
 .response-area {
   position: relative;
   /* overflow: hidden; */
