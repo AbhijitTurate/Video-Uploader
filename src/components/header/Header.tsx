@@ -38,7 +38,7 @@ const Header = () => {
     return (
         <div className="navbar bg-base-100">
             <div className="navbar-start">
-                <div className="dropdown">
+                {/* <div className="dropdown">
                     <div tabIndex={0} role="button" className="btn m-1">
                         Theme
                         <svg
@@ -67,10 +67,10 @@ const Header = () => {
                         ))}
                     </ul>
 
-                </div>
+                </div> */}
             </div>
             <div className="navbar-center">
-                <a className="italic text-2xl">Video Summarizer</a>
+                <h1><strong>Speak Well : Your Online Public Speaking Coach</strong></h1>
             </div>
             <div className="navbar-end">
                 {/* <button className="btn btn-ghost btn-circle">

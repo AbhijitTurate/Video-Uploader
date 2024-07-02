@@ -1,118 +1,153 @@
-import { useState } from 'react';
-import "./VideoUploader.css"
+import { useState, useEffect } from "react";
 
 const VideoUploader = () => {
-    const [files, setFiles] = useState<any>([]); // Add type annotation to the state
-    const [response, setResponse] = useState("");
-    const [loading, setLoading] = useState(0);
+  const [files, setFiles] = useState<any>([]);
+  const [videoFeedback, setVideoFeedback] = useState("");
+  const [audioFeedback, setAudioFeedback] = useState("");
+  const [loading, setLoading] = useState(0);
+  const [statusText, setStatusText] = useState("Processing...");
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
 
-    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  useEffect(() => {
+    let statusInterval: NodeJS.Timeout;
+    if (loading > 0 && loading < 100) {
+      const statusMessages = [
+        "Processing...",
+        "Getting feedback from ChatGPT...",
+        "Almost there..."
+      ];
+      let index = 0;
 
-    console.log("resp---- ", response);
-
-    const dummyCall = async () => {
-        try {
-            setResponse("");
-            setLoading(30);
-            const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
-                method: 'POST',
-                body: JSON.stringify({
-                    title: 'foo',
-                    body: 'bar',
-                    userId: 1,
-                }),
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
-            })
-            setLoading(40);
-            await delay(1000); // 1 second delay
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            setLoading(70);
-            await delay(1000); // 1 second delay
-
-            const responseData = await response.json();
-            // setResponse(responseData.title + " " + responseData.body);
-            setResponse(JSON.stringify(responseData).repeat(100));
-            console.log("Successfully posted : ", responseData);
-            setLoading(100);
-            await delay(1000); // 1 second delay
-            setLoading(101);
-        }
-        catch (error) {
-            setLoading(100);
-            console.log("Error posting : ", error);
-        }
+      statusInterval = setInterval(() => {
+        setStatusText(statusMessages[index]);
+        index = (index + 1) % statusMessages.length;
+      }, 5000);
+    } else {
+      setStatusText("");
     }
 
-    const postCall = async (formData: any) => {
-        try {
-            fetch('http://localhost:3000/upload', {
-                method: 'POST',
-                body: formData
-            }).then((res) => {
-                console.log('res:::', res);
-            }).catch((err) => {
-                console.log('err:::', err);
-            });
-        }
-        catch (error) {
-            console.log("Error posting video : ", error);
+    return () => clearInterval(statusInterval);
+  }, [loading]);
 
-        }
+  const generateThumbnail = (file: File) => {
+    const url = URL.createObjectURL(file);
+    setThumbnail(url);
+  };
+
+  const videoFeedbackCall = async (formData: any) => {
+    try {
+      setLoading(20);
+      fetch("http://localhost:3000/feedback/visual", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => {
+          setLoading(70);
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          setLoading(100);
+          setVideoFeedback(data["feedback"] as string);
+          console.log("Response data:", data);
+        })
+        .catch((err) => {
+          console.log("Error:", err);
+        });
+    } catch (error) {
+      console.log("Error posting video:", error);
     }
-    const handleUpload = async () => {
-        const formData = new FormData();
+  };
 
-        for (const file of files) {
-            formData.append("files", file);
-        }
-
-        await dummyCall();
-
-        return;
-
-        postCall(formData);
+  const audioFeedbackCall = async (formData: any) => {
+    try {
+      setLoading(20);
+      fetch("http://localhost:3000/feedback/audio", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => {
+          setLoading(70);
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          setLoading(100);
+          setAudioFeedback(data["feedback"] as string);
+          console.log("Response data:", data);
+        })
+        .catch((err) => {
+          console.log("Error:", err);
+        });
+    } catch (error) {
+      console.log("Error posting audio:", error);
     }
-    return (
-        <div className='video-uploader-wrapper'>
-            <div className="video-uploader-inputs flex flex-col	items-center gap-y-8">
+  };
 
-                <h1 className="text-4xl font-bold mb-4">Upload Files</h1>
+  const handleUpload = async () => {
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append("upload", file);
+      generateThumbnail(file);
+    }
+    videoFeedbackCall(formData);
+    audioFeedbackCall(formData);
+    return;
+  };
 
-                <input
-                    type="file"
-                    className="file-input file-input-bordered file-input-primary w-full max-w-xs glass"
-                    multiple
-                    onChange={(e) => setFiles(e.target.files)}
-                    accept=".mov,.mp4"
-                />
-
-                <button className="btn btn-outline btn-primary" onClick={handleUpload}>Upload</button>
-            </div>
-
-            <div className="video-uploader-output">
-                <div className="progress-wrapper response-area">
-                    {loading > 0 && loading !== 101 && (
-                        <progress className="progress" value={loading} max="100"></progress>
-                    )}
-                    {response.length > 0 && response}
-                </div>
-            </div>
-
-
-            {/* {response.length > 0 && (
-                <>
-                <div className="response-area">
-                    {response}
-                </div>
-                </>
-            )} */}
+  return (
+    <div className="video-uploader-wrapper" style={{ backgroundColor: "#fff", color: "#000", padding: "20px", borderRadius: "10px" }}>
+      <div className="video-uploader-inputs" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}>
+        <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "16px" }}>Upload Files</h1>
+        <input
+          type="file"
+          style={{ border: "2px solid #007bff", padding: "8px", borderRadius: "5px" }}
+          multiple
+          onChange={(e) => setFiles(e.target.files)}
+          accept=".mov,.mp4"
+        />
+        <button
+          style={{ border: "2px solid #007bff", padding: "8px 16px", borderRadius: "5px", backgroundColor: "#007bff", color: "#fff", marginBottom: '20px' }}
+          onClick={handleUpload}
+        >
+          Upload
+        </button>
+      </div>
+      <div className="progress-wrapper" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "20px", width: "50%", margin: '0 auto' }}>
+        {loading > 0 && loading !== 100 && (
+          <>
+            <progress
+              style={{ width: "100%", height: "20px" }}
+              value={loading}
+              max="100"
+            ></progress>
+            <span style={{ marginTop: "10px" }}>{statusText}</span>
+          </>
+        )}
+      </div>
+      {/* {thumbnail && (
+        <div className="thumbnail-wrapper" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+          <img src={thumbnail} alt="Thumbnail" style={{ width: "50%", borderRadius: "10px" }} />
         </div>
-    )
-}
+      )} */}
+      {audioFeedback && (
+        <div className="video-uploader-output" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+          <div className="response-area" style={{ width: "50%", border: "1px solid #ccc", padding: "10px", borderRadius: "5px" }}>
+            <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "10px" }}>Audio Feedback</h2>
+            <div dangerouslySetInnerHTML={{ __html: audioFeedback.replace(/\n/g, "<br />") }} />
+          </div>
+        </div>
+      )}
+      {videoFeedback && (
+        <div className="video-uploader-output" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+          <div className="response-area" style={{ width: "50%", border: "1px solid #ccc", padding: "10px", borderRadius: "5px" }}>
+            <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "10px" }}>Visual Feedback</h2>
+            <div dangerouslySetInnerHTML={{ __html: videoFeedback.replace(/\n/g, "<br />") }} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
-export default VideoUploader
+export default VideoUploader;
