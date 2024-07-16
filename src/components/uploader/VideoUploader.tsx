@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Markdown from "react-markdown";
 
 const VideoUploader = () => {
   const [files, setFiles] = useState<any>([]);
@@ -14,7 +15,7 @@ const VideoUploader = () => {
       const statusMessages = [
         "Processing...",
         "Getting feedback from ChatGPT...",
-        "Almost there..."
+        "Almost there...",
       ];
       let index = 0;
 
@@ -43,12 +44,12 @@ const VideoUploader = () => {
       })
         .then((res) => {
           setLoading(70);
-          return res.json();
+          return res.text();
         })
         .then((data) => {
           console.log(data);
           setLoading(100);
-          setVideoFeedback(data["feedback"] as string);
+          setVideoFeedback(data as string);
           console.log("Response data:", data);
         })
         .catch((err) => {
@@ -68,12 +69,12 @@ const VideoUploader = () => {
       })
         .then((res) => {
           setLoading(70);
-          return res.json();
+          return res.text();
         })
         .then((data) => {
           console.log(data);
           setLoading(100);
-          setAudioFeedback(data["feedback"] as string);
+          setAudioFeedback(data as string);
           console.log("Response data:", data);
         })
         .catch((err) => {
@@ -96,24 +97,65 @@ const VideoUploader = () => {
   };
 
   return (
-    <div className="video-uploader-wrapper" style={{ backgroundColor: "#fff", color: "#000", padding: "20px", borderRadius: "10px" }}>
-      <div className="video-uploader-inputs" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}>
-        <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "16px" }}>Upload Files</h1>
+    <div
+      className="video-uploader-wrapper"
+      style={{
+        backgroundColor: "#fff",
+        color: "#000",
+        padding: "20px",
+        borderRadius: "10px",
+      }}
+    >
+      <div
+        className="video-uploader-inputs"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "20px",
+        }}
+      >
+        <h1
+          style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "16px" }}
+        >
+          Upload Files
+        </h1>
         <input
           type="file"
-          style={{ border: "2px solid #007bff", padding: "8px", borderRadius: "5px" }}
+          style={{
+            border: "2px solid #007bff",
+            padding: "8px",
+            borderRadius: "5px",
+          }}
           multiple
           onChange={(e) => setFiles(e.target.files)}
           accept=".mov,.mp4"
         />
         <button
-          style={{ border: "2px solid #007bff", padding: "8px 16px", borderRadius: "5px", backgroundColor: "#007bff", color: "#fff", marginBottom: '20px' }}
+          style={{
+            border: "2px solid #007bff",
+            padding: "8px 16px",
+            borderRadius: "5px",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            marginBottom: "20px",
+          }}
           onClick={handleUpload}
         >
           Upload
         </button>
       </div>
-      <div className="progress-wrapper" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "20px", width: "50%", margin: '0 auto' }}>
+      <div
+        className="progress-wrapper"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "20px",
+          width: "50%",
+          margin: "0 auto",
+        }}
+      >
         {loading > 0 && loading !== 100 && (
           <>
             <progress
@@ -131,18 +173,64 @@ const VideoUploader = () => {
         </div>
       )} */}
       {audioFeedback && (
-        <div className="video-uploader-output" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-          <div className="response-area" style={{ width: "50%", border: "1px solid #ccc", padding: "10px", borderRadius: "5px" }}>
-            <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "10px" }}>Audio Feedback</h2>
-            <div dangerouslySetInnerHTML={{ __html: audioFeedback.replace(/\n/g, "<br />") }} />
+        <div
+          className="video-uploader-output"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px",
+          }}
+        >
+          <div
+            className="response-area"
+            style={{
+              width: "50%",
+              border: "1px solid #ccc",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                marginBottom: "10px",
+              }}
+            >
+              Audio Feedback
+            </h2>
+            <Markdown>{audioFeedback}</Markdown>
           </div>
         </div>
       )}
       {videoFeedback && (
-        <div className="video-uploader-output" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-          <div className="response-area" style={{ width: "50%", border: "1px solid #ccc", padding: "10px", borderRadius: "5px" }}>
-            <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "10px" }}>Visual Feedback</h2>
-            <div dangerouslySetInnerHTML={{ __html: videoFeedback.replace(/\n/g, "<br />") }} />
+        <div
+          className="video-uploader-output"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px",
+          }}
+        >
+          <div
+            className="response-area"
+            style={{
+              width: "50%",
+              border: "1px solid #ccc",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                marginBottom: "10px",
+              }}
+            >
+              Visual Feedback
+            </h2>
+            <Markdown>{videoFeedback}</Markdown>
           </div>
         </div>
       )}
